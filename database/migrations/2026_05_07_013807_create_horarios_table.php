@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('horarios', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('pyme_id');
+            $table->string('dia_semana_horarios');
+            $table->time('hora_apertura_horarios');
+            $table->time('hora_cierre_horarios');
             $table->timestamps();
         });
     }

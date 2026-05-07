@@ -9,4 +9,6 @@ class ImagenPyme extends Model
 {
     /** @use HasFactory<\Database\Factories\ImagenPymeFactory> */
     use HasFactory;
+
+    protected $table = 'imagen_pymes';
 }

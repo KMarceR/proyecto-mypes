@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\ImagenPyme;
+use App\Models\Pyme;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +19,9 @@ class ImagenPymeFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'pyme_id' => Pyme::inRandomOrder()->first()->id,
+
+            'ruta_imagen' => 'pymes/default.jpg',
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Resena;
+use App\Models\Pyme;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +19,11 @@ class ResenaFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'pyme_id' => Pyme::inRandomOrder()->first()->id,
+
+            'calificacion_resenas' => fake()->numberBetween(1, 5),
+
+            'comentario_resenas' => fake()->paragraph(2),
         ];
     }
 }

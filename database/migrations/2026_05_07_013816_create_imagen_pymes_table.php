@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('imagen_pymes', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('pyme_id');
+            $table->string('ruta_imagen');
             $table->timestamps();
         });
     }

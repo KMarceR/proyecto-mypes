@@ -17,8 +17,19 @@ class CategoriaFactory extends Factory
      */
     public function definition(): array
     {
+        $categorias = [
+            'Comida',
+            'Tecnología',
+            'Salud',
+            'Ropa',
+            'Servicios',
+            'Belleza',
+            'Automotriz',
+            'Educación'
+        ];
+
         return [
-            //
+            'nombre_categoria' => fake()->randomElement($categorias),
         ];
     }
 }

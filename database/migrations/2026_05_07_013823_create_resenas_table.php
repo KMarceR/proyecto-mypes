@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('resenas', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('pyme_id');
+            $table->integer('calificacion_resenas');
+            $table->text('comentario_resenas');
             $table->timestamps();
         });
     }
