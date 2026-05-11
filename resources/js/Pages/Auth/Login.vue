@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
+
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import Checkbox from '@/Components/Checkbox.vue';
@@ -20,7 +21,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.transform(data => ({
+    form.transform((data) => ({
         ...data,
         remember: form.remember ? 'on' : '',
     })).post(route('login'), {
@@ -30,61 +31,160 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Log in" />
+    <Head title="Iniciar Sesión" />
 
-    <AuthenticationCard>
-        <template #logo>
-            <AuthenticationCardLogo />
-        </template>
+    <div
+        class="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 via-white to-orange-50 px-4"
+    >
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
+        <AuthenticationCard>
+
+            <!-- LOGO -->
+            <template #logo>
+
+                <template>
+    <div
+        class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-orange-100 via-white to-orange-50 px-4"
+    >
+        <!-- Logo -->
+        <div class="mb-6">
+            <slot name="logo" />
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-                <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
+        <!-- Card -->
+        <div
+            class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-orange-100 px-8 py-10"
+        >
+            <slot />
+        </div>
+    </div>
+</template>
+
+            </template>
+
+            <!-- STATUS -->
+            <div
+                v-if="status"
+                class="mb-6 rounded-xl bg-green-100 border border-green-200 text-green-700 px-4 py-3 text-sm"
+            >
+                {{ status }}
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-                <TextInput
-                    id="password"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="current-password"
-                />
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
+            <!-- FORM -->
+            <form @submit.prevent="submit" class="space-y-5">
 
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox v-model:checked="form.remember" name="remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
+                <!-- EMAIL -->
+                <div>
 
-            <div class="flex items-center justify-end mt-4">
-                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Forgot your password?
-                </Link>
+                    <InputLabel
+                        for="email"
+                        value="Correo Electrónico"
+                        class="text-gray-700 font-medium"
+                    />
 
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
-    </AuthenticationCard>
+                    <TextInput
+                        id="email"
+                        v-model="form.email"
+                        type="email"
+                        class="mt-2 block w-full rounded-xl border-gray-300 focus:border-orange-400 focus:ring-orange-400"
+                        placeholder="correo@ejemplo.com"
+                        required
+                        autofocus
+                        autocomplete="username"
+                    />
+
+                    <InputError
+                        class="mt-2"
+                        :message="form.errors.email"
+                    />
+
+                </div>
+
+                <!-- PASSWORD -->
+                <div>
+
+                    <InputLabel
+                        for="password"
+                        value="Contraseña"
+                        class="text-gray-700 font-medium"
+                    />
+
+                    <TextInput
+                        id="password"
+                        v-model="form.password"
+                        type="password"
+                        class="mt-2 block w-full rounded-xl border-gray-300 focus:border-orange-400 focus:ring-orange-400"
+                        placeholder="••••••••"
+                        required
+                        autocomplete="current-password"
+                    />
+
+                    <InputError
+                        class="mt-2"
+                        :message="form.errors.password"
+                    />
+
+                </div>
+
+                <!-- REMEMBER -->
+                <div class="flex items-center justify-between">
+
+                    <label class="flex items-center">
+
+                        <Checkbox
+                            v-model:checked="form.remember"
+                            name="remember"
+                            class="rounded border-gray-300 text-orange-500 focus:ring-orange-400"
+                        />
+
+                        <span class="ms-2 text-sm text-gray-600">
+                            Recordarme
+                        </span>
+
+                    </label>
+
+                    <Link
+                        v-if="canResetPassword"
+                        :href="route('password.request')"
+                        class="text-sm text-orange-500 hover:text-orange-600 font-medium"
+                    >
+                        ¿Olvidaste tu contraseña?
+                    </Link>
+
+                </div>
+
+                <!-- BUTTON -->
+                <div class="pt-2">
+
+                    <PrimaryButton
+                        class="w-full justify-center py-3 text-sm rounded-xl"
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"
+                    >
+                        Iniciar Sesión
+                    </PrimaryButton>
+
+                </div>
+
+                <!-- REGISTER -->
+                <div class="text-center pt-4">
+
+                    <p class="text-sm text-gray-500">
+                        ¿No tienes una cuenta?
+
+                        <Link
+                            :href="route('register')"
+                            class="text-orange-500 hover:text-orange-600 font-semibold"
+                        >
+                            Crear cuenta
+                        </Link>
+                    </p>
+
+                </div>
+
+            </form>
+
+        </AuthenticationCard>
+
+    </div>
 </template>
