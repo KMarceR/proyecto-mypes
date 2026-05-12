@@ -39,4 +39,14 @@ class Pyme extends Model
     {
         return $this->belongsTo(Categoria::class);
     }
+
+    public function horarios()
+    {
+        return $this->hasMany(Horario::class);
+    }
+
+    public function resenas()
+    {
+        return $this->hasMany(Resena::class);
+    }
 }

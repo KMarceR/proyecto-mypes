@@ -14,7 +14,11 @@ class PymeController extends Controller
      */
     public function index()
     {
-        $pymes = Pyme::with(['user', 'categoria'])->latest()->get();
+        $pymes = Pyme::with([
+            'user',
+            'categoria',
+            'horarios'
+        ])->latest()->get();
 
         return Inertia::render('Pymes/Index', [
             'pymes' => $pymes
@@ -57,7 +61,13 @@ class PymeController extends Controller
      */
     public function show(Pyme $pyme)
     {
-        return view('pymes.show', [
+        $pyme->load([
+            'categoria',
+            'horarios',
+            'resenas'
+        ]);
+
+        return Inertia::render('Pymes/Show', [
             'pyme' => $pyme
         ]);
     }
