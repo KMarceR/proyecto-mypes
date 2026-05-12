@@ -4,26 +4,20 @@ import AppFooter from '@/Layouts/AppFooter.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
-    nombre: '',
-    categoria: '',
-    telefono: '',
-    email: '',
-    direccion: '',
-    descripcion: '',
-    imagen: '',
+    categoria_id: '',
+    nombre_pyme: '',
+    telefono_pyme: '',
+    email_pyme: '',
+    direccion_pyme: '',
+    descripcion_pyme: '',
 });
 
-const categorias = [
-    'Restaurante',
-    'Tecnología',
-    'Ropa y Accesorios',
-    'Servicios',
-    'Educación',
-    'Salud',
-];
+defineProps({
+    categorias: Array,
+});
 
 const submit = () => {
-    form.post('/mypes');
+    form.post(route('pymes.store'));
 };
 </script>
 
@@ -86,7 +80,7 @@ const submit = () => {
                                 <span class="text-red-500">*</span>
                             </label>
 
-                            <input v-model="form.nombre" type="text" placeholder="Ej: Cafetería La Esquina"
+                            <input v-model="form.nombre_pyme" type="text" placeholder="Ej: Cafetería La Esquina"
                                 class="w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:outline-none" />
                         </div>
 
@@ -99,14 +93,14 @@ const submit = () => {
                                     <span class="text-red-500">*</span>
                                 </label>
 
-                                <select v-model="form.categoria"
+                                <select v-model="form.categoria_id"
                                     class="w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:outline-none">
                                     <option value="">
                                         Selecciona una categoría
                                     </option>
 
-                                    <option v-for="categoria in categorias" :key="categoria" :value="categoria">
-                                        {{ categoria }}
+                                    <option v-for="categoria in categorias" :key="categoria.id" :value="categoria.id">
+                                        {{ categoria.nombre_categoria }}
                                     </option>
                                 </select>
                             </div>
@@ -117,7 +111,7 @@ const submit = () => {
                                     <span class="text-red-500">*</span>
                                 </label>
 
-                                <input v-model="form.telefono" type="text" placeholder="+503 2222 2222"
+                                <input v-model="form.telefono_pyme" type="text" placeholder="+503 2222 2222"
                                     class="w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:outline-none" />
                             </div>
                         </div>
@@ -129,7 +123,7 @@ const submit = () => {
                                 <span class="text-red-500">*</span>
                             </label>
 
-                            <input v-model="form.email" type="email" placeholder="info@tunegocio.com"
+                            <input v-model="form.email_pyme" type="email" placeholder="info@tunegocio.com"
                                 class="w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:outline-none" />
                         </div>
 
@@ -140,7 +134,7 @@ const submit = () => {
                                 <span class="text-red-500">*</span>
                             </label>
 
-                            <input v-model="form.direccion" type="text" placeholder="San Salvador, El Salvador"
+                            <input v-model="form.direccion_pyme" type="text" placeholder="San Salvador, El Salvador"
                                 class="w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:outline-none" />
                         </div>
 
@@ -151,7 +145,7 @@ const submit = () => {
                                 <span class="text-red-500">*</span>
                             </label>
 
-                            <textarea v-model="form.descripcion" rows="4"
+                            <textarea v-model="form.descripcion_pyme" rows="4"
                                 placeholder="Describe tu negocio, productos o servicios..."
                                 class="w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 resize-none focus:ring-2 focus:ring-orange-500 focus:outline-none" />
                         </div>

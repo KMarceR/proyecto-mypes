@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Pyme;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class PymeController extends Controller
 {
@@ -12,7 +14,11 @@ class PymeController extends Controller
      */
     public function index()
     {
-        //
+        $pymes = Pyme::with(['user', 'categoria'])->latest()->get();
+
+        return Inertia::render('Pymes/Index', [
+            'pymes' => $pymes
+        ]);
     }
 
     /**
@@ -20,7 +26,7 @@ class PymeController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Pymes/Create');
     }
 
     /**
@@ -28,7 +34,22 @@ class PymeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'categoria_id' => 'required|integer',
+            'nombre_pyme' => 'required|string|max:255',
+            'telefono_pyme' => 'required|string|max:20',
+            'email_pyme' => 'required|email|max:255',
+            'direccion_pyme' => 'required|string',
+            'descripcion_pyme' => 'required|string',
+        ]);
+
+        $validated['user_id'] = Auth::id();
+
+        Pyme::create($validated);
+
+        return redirect()
+            ->route('pymes.index')
+            ->with('success', 'PYME registrada correctamente.');
     }
 
     /**
@@ -36,7 +57,9 @@ class PymeController extends Controller
      */
     public function show(Pyme $pyme)
     {
-        //
+        return view('pymes.show', [
+            'pyme' => $pyme
+        ]);
     }
 
     /**
@@ -44,7 +67,9 @@ class PymeController extends Controller
      */
     public function edit(Pyme $pyme)
     {
-        //
+        return Inertia::render('Pymes/Edit', [
+            'pyme' => $pyme
+        ]);
     }
 
     /**
@@ -52,7 +77,20 @@ class PymeController extends Controller
      */
     public function update(Request $request, Pyme $pyme)
     {
-        //
+        $validated = $request->validate([
+            'categoria_id' => 'required|integer',
+            'nombre_pyme' => 'required|string|max:255',
+            'telefono_pyme' => 'required|string|max:20',
+            'email_pyme' => 'required|email|max:255',
+            'direccion_pyme' => 'required|string',
+            'descripcion_pyme' => 'required|string',
+        ]);
+
+        $pyme->update($validated);
+
+        return redirect()
+            ->route('pymes.index')
+            ->with('success', 'PYME actualizada correctamente.');
     }
 
     /**
@@ -60,6 +98,10 @@ class PymeController extends Controller
      */
     public function destroy(Pyme $pyme)
     {
-        //
+        $pyme->delete();
+
+        return redirect()
+            ->route('pymes.index')
+            ->with('success', 'PYME eliminada correctamente.');
     }
 }

@@ -9,4 +9,21 @@ class Categoria extends Model
 {
     /** @use HasFactory<\Database\Factories\CategoriaFactory> */
     use HasFactory;
+
+    protected $table = 'categorias';
+
+    protected $fillable = [
+        'nombre_categoria',
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELACIONES
+    |--------------------------------------------------------------------------
+    */
+
+    public function pymes()
+    {
+        return $this->hasMany(Pyme::class);
+    }
 }
