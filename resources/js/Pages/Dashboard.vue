@@ -176,7 +176,9 @@ defineProps({
                         <section class="max-w-7xl mx-auto px-6 pb-14">
 
                             <div class="flex gap-6 overflow-x-auto scrollbar-hide pb-2">
-
+                                <h2 class="text-4xl font-bold text-black">
+                                    Últimas reseñas
+                                </h2>
                                 <div v-for="resena in resenas" :key="resena.id"
                                     class="min-w-[360px] bg-white rounded-2xl border border-gray-100 shadow p-6">
 
