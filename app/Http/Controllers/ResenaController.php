@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Resena;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ResenaController extends Controller
 {
@@ -12,7 +13,11 @@ class ResenaController extends Controller
      */
     public function index()
     {
-        //
+        $resenas = Resena::with('pyme')->latest()->get();
+
+        return Inertia::render('Resenas/Index', [
+            'resenas' => $resenas
+        ]);
     }
 
     /**
@@ -20,7 +25,7 @@ class ResenaController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Resenas/Create');
     }
 
     /**
@@ -28,7 +33,17 @@ class ResenaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'pyme_id' => 'required|exists:pymes,id',
+            'calificacion_resenas' => 'required|integer|min:1|max:5',
+            'comentario_resenas' => 'required|string',
+        ]);
+
+        Resena::create($validated);
+
+        return redirect()
+            ->route('resenas.index')
+            ->with('success', 'Reseña registrada correctamente.');
     }
 
     /**
@@ -36,7 +51,11 @@ class ResenaController extends Controller
      */
     public function show(Resena $resena)
     {
-        //
+        $resena->load('pyme');
+
+        return Inertia::render('Resenas/Show', [
+            'resena' => $resena
+        ]);
     }
 
     /**
@@ -44,7 +63,9 @@ class ResenaController extends Controller
      */
     public function edit(Resena $resena)
     {
-        //
+        return Inertia::render('Resenas/Edit', [
+            'resena' => $resena
+        ]);
     }
 
     /**
@@ -52,7 +73,17 @@ class ResenaController extends Controller
      */
     public function update(Request $request, Resena $resena)
     {
-        //
+        $validated = $request->validate([
+            'pyme_id' => 'required|exists:pymes,id',
+            'calificacion_resenas' => 'required|integer|min:1|max:5',
+            'comentario_resenas' => 'required|string',
+        ]);
+
+        $resena->update($validated);
+
+        return redirect()
+            ->route('resenas.index')
+            ->with('success', 'Reseña actualizada correctamente.');
     }
 
     /**
@@ -60,6 +91,10 @@ class ResenaController extends Controller
      */
     public function destroy(Resena $resena)
     {
-        //
+        $resena->delete();
+
+        return redirect()
+            ->route('resenas.index')
+            ->with('success', 'Reseña eliminada correctamente.');
     }
 }

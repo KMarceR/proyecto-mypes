@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ImagenPyme;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class ImagenPymeController extends Controller
 {
@@ -12,7 +14,11 @@ class ImagenPymeController extends Controller
      */
     public function index()
     {
-        //
+        $imagenes = ImagenPyme::with('pyme')->latest()->get();
+
+        return Inertia::render('Imagenes/Index', [
+            'imagenes' => $imagenes
+        ]);
     }
 
     /**
@@ -20,7 +26,7 @@ class ImagenPymeController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Imagenes/Create');
     }
 
     /**
@@ -28,7 +34,23 @@ class ImagenPymeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'pyme_id' => 'required|exists:pymes,id',
+            'ruta_imagen' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        // Guardar imagen
+        $path = $request->file('ruta_imagen')->store('pymes', 'public');
+
+        // Crear registro
+        ImagenPyme::create([
+            'pyme_id' => $validated['pyme_id'],
+            'ruta_imagen' => $path,
+        ]);
+
+        return redirect()
+            ->route('imagenes.index')
+            ->with('success', 'Imagen registrada correctamente.');
     }
 
     /**
@@ -36,7 +58,11 @@ class ImagenPymeController extends Controller
      */
     public function show(ImagenPyme $imagenPyme)
     {
-        //
+        $imagenPyme->load('pyme');
+
+        return Inertia::render('Imagenes/Show', [
+            'imagen' => $imagenPyme
+        ]);
     }
 
     /**
@@ -44,7 +70,9 @@ class ImagenPymeController extends Controller
      */
     public function edit(ImagenPyme $imagenPyme)
     {
-        //
+        return Inertia::render('Imagenes/Edit', [
+            'imagen' => $imagenPyme
+        ]);
     }
 
     /**
@@ -52,7 +80,30 @@ class ImagenPymeController extends Controller
      */
     public function update(Request $request, ImagenPyme $imagenPyme)
     {
-        //
+        $validated = $request->validate([
+            'pyme_id' => 'required|exists:pymes,id',
+            'ruta_imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        // Si sube nueva imagen
+        if ($request->hasFile('ruta_imagen')) {
+
+            // Eliminar imagen anterior
+            if ($imagenPyme->ruta_imagen) {
+                Storage::disk('public')->delete($imagenPyme->ruta_imagen);
+            }
+
+            // Guardar nueva imagen
+            $path = $request->file('ruta_imagen')->store('pymes', 'public');
+
+            $validated['ruta_imagen'] = $path;
+        }
+
+        $imagenPyme->update($validated);
+
+        return redirect()
+            ->route('imagenes.index')
+            ->with('success', 'Imagen actualizada correctamente.');
     }
 
     /**
@@ -60,6 +111,15 @@ class ImagenPymeController extends Controller
      */
     public function destroy(ImagenPyme $imagenPyme)
     {
-        //
+        // Eliminar archivo físico
+        if ($imagenPyme->ruta_imagen) {
+            Storage::disk('public')->delete($imagenPyme->ruta_imagen);
+        }
+
+        $imagenPyme->delete();
+
+        return redirect()
+            ->route('imagenes.index')
+            ->with('success', 'Imagen eliminada correctamente.');
     }
 }
