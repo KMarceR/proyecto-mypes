@@ -34,7 +34,6 @@ class Pyme extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Categoría
     public function categoria()
     {
         return $this->belongsTo(Categoria::class);
@@ -48,5 +47,10 @@ class Pyme extends Model
     public function resenas()
     {
         return $this->hasMany(Resena::class);
+    }
+
+    public function imagenes()
+    {
+        return $this->hasMany(ImagenPyme::class);
     }
 }

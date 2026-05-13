@@ -4,8 +4,9 @@ import AppFooter from '@/Layouts/AppFooter.vue';
 import { Head, Link } from '@inertiajs/vue3';
 
 defineProps({
-    canLogin: Boolean,
-    canRegister: Boolean,
+    categorias: Array,
+    pymes: Array,
+    resenas: Array,
 });
 
 </script>
@@ -71,6 +72,41 @@ defineProps({
                             </div>
                         </section>
 
+                        <!-- CATEGORÍAS -->
+                        <section class="max-w-7xl mx-auto px-6 py-14">
+
+                            <div class="flex items-center justify-between mb-8">
+
+                                <h2 class="text-4xl font-bold text-black">
+                                    Explora Categorías
+                                </h2>
+
+                            </div>
+
+                            <div class="flex gap-5 overflow-x-auto scrollbar-hide pb-2">
+
+                                <div v-for="categoria in categorias" :key="categoria.id"
+                                    class="min-w-[220px] bg-white rounded-2xl shadow border border-gray-100 p-6 hover:shadow-lg transition cursor-pointer">
+
+                                    <div
+                                        class="w-14 h-14 rounded-xl bg-orange-100 flex items-center justify-center mb-5 text-3xl">
+                                        📂
+                                    </div>
+
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">
+                                        {{ categoria.nombre_categoria }}
+                                    </h3>
+
+                                    <p class="text-gray-500 text-sm">
+                                        Explora negocios de esta categoría.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
                         <!-- LISTADO -->
                         <section class="max-w-7xl mx-auto px-6 py-14">
 
@@ -80,10 +116,10 @@ defineProps({
 
                             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
 
-                                <!-- CARD -->
-                                <div class="bg-white rounded-2xl overflow-hidden shadow border border-gray-100">
+                                <div v-for="pyme in pymes" :key="pyme.id"
+                                    class="bg-white rounded-2xl overflow-hidden shadow border border-gray-100">
 
-                                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1200"
+                                    <img :src="pyme.imagenes?.[0]?.ruta_imagen || 'https://via.placeholder.com/400x300'"
                                         class="w-full h-56 object-cover" />
 
                                     <div class="p-5">
@@ -91,184 +127,150 @@ defineProps({
                                         <div class="flex justify-between items-center mb-3">
 
                                             <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-                                                Restaurantes
+                                                {{ pyme.categoria?.nombre_categoria }}
                                             </span>
 
                                             <span class="text-yellow-500 font-semibold">
-                                                ★ 4.5
+                                                ★ {{ pyme.resenas?.length || 0 }}
                                             </span>
 
                                         </div>
 
                                         <h3 class="text-2xl font-bold text-gray-900 mb-2">
-                                            Cafetería La Esquina
+                                            {{ pyme.nombre_pyme }}
                                         </h3>
 
-                                        <p class="text-gray-600 text-sm mb-4">
-                                            Cafetería artesanal con los mejores granos de café
-                                            peruano.
+                                        <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                                            {{ pyme.descripcion_pyme }}
                                         </p>
 
                                         <div class="space-y-2 text-sm text-gray-600 mb-5">
 
-                                            <div class="flex items-center gap-2">
-                                                📍 San Salvador, Centro Histórico
+                                            <div>
+                                                📍 {{ pyme.direccion_pyme }}
                                             </div>
 
-                                            <div class="flex items-center gap-2">
-                                                📞 +503 2222 2222
+                                            <div>
+                                                📞 {{ pyme.telefono_pyme }}
                                             </div>
 
-                                            <div class="flex items-center gap-2">
-                                                ✉ info@cafelaesquina.com
+                                            <div>
+                                                ✉ {{ pyme.email_pyme }}
                                             </div>
 
                                         </div>
 
-                                        <Link href="/detalle-pyme"
+                                        <Link :href="`/pymes/${pyme.id}`"
                                             class="block text-center bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-medium transition">
                                             Ver perfil
                                         </Link>
 
                                     </div>
-                                </div>
 
-                                <!-- CARD -->
-                                <div class="bg-white rounded-2xl overflow-hidden shadow border border-gray-100">
-
-                                    <img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?q=80&w=1200"
-                                        class="w-full h-56 object-cover" />
-
-                                    <div class="p-5">
-
-                                        <div class="flex justify-between items-center mb-3">
-
-                                            <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-                                                Servicios Automotriz
-                                            </span>
-
-                                            <span class="text-yellow-500 font-semibold">
-                                                ★ 5.0
-                                            </span>
-
-                                        </div>
-
-                                        <h3 class="text-2xl font-bold text-gray-900 mb-2">
-                                            Taller Rodríguez
-                                        </h3>
-
-                                        <p class="text-gray-600 text-sm mb-4">
-                                            Reparación y mantenimiento automotriz con más de
-                                            15 años de experiencia.
-                                        </p>
-
-                                        <div class="space-y-2 text-sm text-gray-600 mb-5">
-
-                                            <div>📍 San Salvador</div>
-                                            <div>📞 +503 2222 2222</div>
-                                            <div>✉ contacto@taller.com</div>
-
-                                        </div>
-
-                                        <button
-                                            class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-medium transition">
-                                            Ver perfil
-                                        </button>
-
-                                    </div>
-                                </div>
-
-                                <!-- CARD -->
-                                <div class="bg-white rounded-2xl overflow-hidden shadow border border-gray-100">
-
-                                    <img src="https://images.unsplash.com/photo-1521334884684-d80222895322?q=80&w=1200"
-                                        class="w-full h-56 object-cover" />
-
-                                    <div class="p-5">
-
-                                        <div class="flex justify-between items-center mb-3">
-
-                                            <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-                                                Artesanías
-                                            </span>
-
-                                            <span class="text-yellow-500 font-semibold">
-                                                ★ 5.0
-                                            </span>
-
-                                        </div>
-
-                                        <h3 class="text-2xl font-bold text-gray-900 mb-2">
-                                            Luna Maya
-                                        </h3>
-
-                                        <p class="text-gray-600 text-sm mb-4">
-                                            Artesanías y productos típicos salvadoreños.
-                                        </p>
-
-                                        <div class="space-y-2 text-sm text-gray-600 mb-5">
-
-                                            <div>📍 San Salvador</div>
-                                            <div>📞 +503 2222 2222</div>
-                                            <div>✉ ventas@lunamaya.com</div>
-
-                                        </div>
-
-                                        <button
-                                            class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-medium transition">
-                                            Ver perfil
-                                        </button>
-
-                                    </div>
-                                </div>
-
-                                <!-- CARD -->
-                                <div class="bg-white rounded-2xl overflow-hidden shadow border border-gray-100">
-
-                                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200"
-                                        class="w-full h-56 object-cover" />
-
-                                    <div class="p-5">
-
-                                        <div class="flex justify-between items-center mb-3">
-
-                                            <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-                                                Moda y Ropa
-                                            </span>
-
-                                            <span class="text-yellow-500 font-semibold">
-                                                ★ 4.0
-                                            </span>
-
-                                        </div>
-
-                                        <h3 class="text-2xl font-bold text-gray-900 mb-2">
-                                            Boutique Estilo
-                                        </h3>
-
-                                        <p class="text-gray-600 text-sm mb-4">
-                                            Moda y accesorios para toda la familia.
-                                        </p>
-
-                                        <div class="space-y-2 text-sm text-gray-600 mb-5">
-
-                                            <div>📍 San Salvador</div>
-                                            <div>📞 +503 2222 2222</div>
-                                            <div>✉ boutique@correo.com</div>
-
-                                        </div>
-
-                                        <button
-                                            class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-medium transition">
-                                            Ver perfil
-                                        </button>
-
-                                    </div>
                                 </div>
 
                             </div>
                         </section>
 
+                        <!-- ÚLTIMOS COMENTARIOS -->
+                        <section class="max-w-7xl mx-auto px-6 pb-14">
+
+                            <div class="flex gap-6 overflow-x-auto scrollbar-hide pb-2">
+
+                                <div v-for="resena in resenas" :key="resena.id"
+                                    class="min-w-[360px] bg-white rounded-2xl border border-gray-100 shadow p-6">
+
+                                    <div class="flex items-center justify-between mb-4">
+
+                                        <div>
+                                            <h4 class="font-bold text-lg text-gray-900">
+                                                Usuario
+                                            </h4>
+
+                                            <p class="text-sm text-gray-400">
+                                                {{ resena.pyme?.nombre_pyme }}
+                                            </p>
+                                        </div>
+
+                                        <div class="flex gap-1 text-yellow-400">
+                                            {{ '★'.repeat(resena.calificacion_resenas) }}
+                                        </div>
+
+                                    </div>
+
+                                    <p class="text-gray-600 leading-relaxed">
+                                        {{ resena.comentario_resenas }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                        <!-- CTA REGISTRO MYPE -->
+                        <section class="max-w-7xl mx-auto px-6 pb-20">
+
+                            <div
+                                class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-orange-500 to-orange-600 shadow-2xl">
+
+                                <!-- DECORACIÓN -->
+                                <div class="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full">
+                                </div>
+
+                                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-white/10 rounded-full">
+                                </div>
+
+                                <!-- CONTENIDO -->
+                                <div
+                                    class="relative z-10 px-8 py-16 md:px-16 flex flex-col lg:flex-row items-center justify-between gap-10">
+
+                                    <!-- TEXTO -->
+                                    <div class="max-w-2xl">
+
+                                        <span
+                                            class="inline-flex items-center bg-white/20 text-white text-sm font-medium px-4 py-2 rounded-full mb-5">
+                                            🚀 Impulsa tu negocio
+                                        </span>
+
+                                        <h2 class="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-5">
+
+                                            ¿Tienes una MYPE?
+                                            <br />
+
+                                            Haz crecer tu negocio con nosotros
+                                        </h2>
+
+                                        <p class="text-orange-100 text-lg leading-relaxed">
+                                            Registra tu emprendimiento y permite que más personas
+                                            descubran tus productos y servicios en todo El Salvador.
+                                            Aumenta tu visibilidad y conecta con nuevos clientes.
+                                        </p>
+
+                                    </div>
+
+                                    <!-- BOTONES -->
+                                    <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+
+                                        <Link href="/perfil-pymes"
+                                            class="bg-white text-orange-600 hover:bg-orange-50 transition px-8 py-4 rounded-2xl font-bold text-center shadow-lg">
+
+                                            Crear perfil de MYPE
+                                        </Link>
+
+                                        <Link href="/detalle-pyme"
+                                            class="border border-white/40 text-white hover:bg-white/10 transition px-8 py-4 rounded-2xl font-bold text-center">
+
+                                            Ver ejemplos
+                                        </Link>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </section>
                     </main>
                 </div>
             </div>
