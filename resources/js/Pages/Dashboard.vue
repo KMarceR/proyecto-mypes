@@ -9,6 +9,14 @@ defineProps({
     resenas: Array,
 });
 
+const busqueda = ref('');
+
+const buscar = () => {
+    router.get('/resultados-busqueda', {
+        busqueda: busqueda.value
+    });
+};
+
 </script>
 
 <template>
@@ -71,6 +79,37 @@ defineProps({
                                 </div>
                             </div>
                         </section>
+
+                        <!-- BUSCADOR -->
+                        <div class="w-full max-w-3xl mt-8">
+
+                            <div class="bg-white rounded-2xl shadow-2xl flex items-center px-4 py-3 gap-3">
+
+                                <!-- ICONO -->
+                                <div class="text-gray-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+
+                                <!-- INPUT -->
+                                <input v-model="busqueda" @keyup.enter="buscar" type="text"
+                                    placeholder="Busca por nombre, categoría o ubicación..."
+                                    class="flex-1 border-none outline-none focus:ring-0 text-gray-700 text-lg" />
+
+                                <!-- BOTÓN -->
+                                <button @click="buscar"
+                                    class="bg-orange-500 hover:bg-orange-600 transition text-white font-semibold px-6 py-3 rounded-xl shadow-lg">
+
+                                    Buscar
+                                </button>
+
+                            </div>
+
+                        </div>
 
                         <!-- CATEGORÍAS -->
                         <section class="max-w-7xl mx-auto px-6 py-14">

@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Models\Pyme;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -46,3 +48,21 @@ Route::middleware([
         return Inertia::render('PerfilPymes');
     })->name('perfilpymes');
 });
+
+Route::get('/resultados-busqueda', function (Request $request) {
+
+    $busqueda = $request->busqueda;
+
+    $resultados = Pyme::with('categoria')
+        ->when($busqueda, function ($query) use ($busqueda) {
+            $query->where('nombre_pyme', 'like', "%{$busqueda}%")
+                ->orWhere('descripcion_pyme', 'like', "%{$busqueda}%")
+                ->orWhere('direccion_pyme', 'like', "%{$busqueda}%");
+        })
+        ->get();
+
+    return Inertia::render('SearchResults', [
+        'resultados' => $resultados,
+        'busqueda' => $busqueda,
+    ]);
+})->name('resultados.busqueda');
