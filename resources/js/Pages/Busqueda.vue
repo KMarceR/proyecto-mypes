@@ -1,6 +1,5 @@
 # SearchResults.vue
 
-```vue
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import AppFooter from '@/Layouts/AppFooter.vue';
