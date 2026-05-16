@@ -49,10 +49,18 @@ class PymeController extends Controller
 
         $validated['user_id'] = Auth::id();
 
-        Pyme::create($validated);
+        $image = $request->input('imagen');
+
+        $pyme = Pyme::create($validated);
+
+        if ($image) {
+            $pyme->imagenes()->create([
+                'ruta_imagen' => $image,
+            ]);
+        }
 
         return redirect()
-            ->route('pymes.index')
+            ->route('pymes.show', $pyme)
             ->with('success', 'PYME registrada correctamente.');
     }
 
@@ -64,7 +72,8 @@ class PymeController extends Controller
         $pyme->load([
             'categoria',
             'horarios',
-            'resenas'
+            'resenas',
+            'imagenes',
         ]);
 
         return Inertia::render('Pymes/Show', [
@@ -98,9 +107,15 @@ class PymeController extends Controller
 
         $pyme->update($validated);
 
+        $image = $request->input('imagen');
+        $pyme->imagenes()->delete();
+        if ($image) {
+            $pyme->imagenes()->create(['ruta_imagen' => $image]);
+        }
+
         return redirect()
-            ->route('pymes.index')
-            ->with('success', 'PYME actualizada correctamente.');
+            ->route('perfilpymes')
+            ->with('success', 'MYPE actualizada correctamente.');
     }
 
     /**

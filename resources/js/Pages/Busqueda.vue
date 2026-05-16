@@ -1,9 +1,10 @@
 # SearchResults.vue
 
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
 import AppFooter from '@/Layouts/AppFooter.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const props = defineProps({
     resultados: {
@@ -13,8 +14,32 @@ const props = defineProps({
     busqueda: {
         type: String,
         default: ''
+    },
+    selectedCategory: {
+        type: [String, Number],
+        default: ''
+    },
+    selectedOrderBy: {
+        type: String,
+        default: ''
     }
 });
+
+
+const inputBusqueda = ref(props.busqueda ?? '');
+const selectCategoria = ref(props.selectedCategory ?? '');
+const selectOrden = ref(props.selectedOrderBy ?? '');
+
+const promedio = (resenas) => {
+    if (!resenas?.length) return '—';
+    const avg = resenas.reduce((s, r) => s + r.calificacion_resenas, 0) / resenas.length;
+    return avg.toFixed(1);
+};
+
+const onErroLoadImagen = (event) => {
+    // Oculatar la imagen si no se carga correctamente
+    event.target.style.display = 'none';
+};
 </script>
 
 <template>
@@ -42,7 +67,7 @@ const props = defineProps({
 
                 <!-- BUSCADOR -->
                 <div class="w-full md:w-[420px]">
-                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm flex items-center px-5 py-4">
+                    <form class="bg-white rounded-2xl border border-gray-200 shadow-sm flex items-center px-5 py-4" action="resultados-busqueda" method="GET">
 
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-400 mr-3" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
@@ -50,10 +75,11 @@ const props = defineProps({
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-
-                        <input type="text" :value="busqueda" placeholder="Buscar negocios..."
-                            class="w-full outline-none border-none focus:ring-0 text-gray-700" />
-                    </div>
+                        <input type="hidden" name="categoria" v-model="selectCategoria" />
+                        <input type="hidden" name="order_by" v-model="selectOrden" />
+                        <input type="text"  placeholder="Buscar negocios..." v-model="inputBusqueda"
+                            class="w-full outline-none border-none focus:ring-0 text-gray-700" name="busqueda" />
+                    </form>
                 </div>
             </div>
         </template>
@@ -77,29 +103,30 @@ const props = defineProps({
                             </p>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full lg:w-auto">
+                        <form class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full lg:w-auto" action="resultados-busqueda" method="GET">
+                            <input type="hidden" name="busqueda" v-model="inputBusqueda" />
 
-                            <select class="rounded-2xl border-gray-200 focus:border-orange-500 focus:ring-orange-500">
-                                <option>Todas las categorías</option>
-                                <option>Restaurantes</option>
-                                <option>Tecnología</option>
-                                <option>Moda</option>
-                                <option>Servicios</option>
+                            <select v-model="selectCategoria" class="rounded-2xl border-gray-200 focus:border-orange-500 focus:ring-orange-500" name="category">
+                                <option value="">Todas las categorías</option>
+                                <option v-for="categoria in $page.props.categorias" :key="categoria.id" :value="categoria.id">
+                                    {{ categoria.nombre_categoria }}
+                                </option>
                             </select>
 
-                            <select class="rounded-2xl border-gray-200 focus:border-orange-500 focus:ring-orange-500">
-                                <option>Ordenar por</option>
-                                <option>Más recientes</option>
-                                <option>Mejor valoradas</option>
-                                <option>Más populares</option>
+                            <select v-model="selectOrden" class="rounded-2xl border-gray-200 focus:border-orange-500 focus:ring-orange-500" name="order_by">
+                                <option value="">Ordenar por</option>
+                                <option value="recientes">Más recientes</option>
+                                <option value="mejor_valoradas">Mejor valoradas</option>
+                                <option value="populares">Más populares</option>
                             </select>
 
                             <button
+                                type="submit"
                                 class="bg-orange-500 hover:bg-orange-600 transition text-white font-semibold px-6 py-3 rounded-2xl shadow">
                                 Aplicar filtros
                             </button>
 
-                        </div>
+                        </form>
                     </div>
                 </div>
 
@@ -120,72 +147,58 @@ const props = defineProps({
 
                     <!-- CARD -->
                     <div v-for="pyme in resultados" :key="pyme.id"
-                        class="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition duration-300 group">
+                        class="bg-white rounded-2xl overflow-hidden shadow border border-gray-100">
 
-                        <!-- IMAGEN -->
-                        <div class="relative overflow-hidden">
+                        <img :src="pyme.imagenes?.[0]?.ruta_imagen"
+                            v-if="pyme.imagenes?.[0]?.ruta_imagen"
+                            v-on:error="onErroLoadImagen"
+                            class="w-full h-56 object-cover" />
 
-                            <img :src="pyme.imagen || 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=1200'"
-                                class="w-full h-64 object-cover group-hover:scale-105 transition duration-300" />
+                        <div class="p-5">
 
-                            <div class="absolute top-4 left-4">
-                                <span
-                                    class="bg-white/90 backdrop-blur-sm text-orange-600 text-xs font-bold px-4 py-2 rounded-full shadow">
-                                    {{ pyme.categoria?.nombre_categoria || 'Categoría' }}
+                            <div class="flex justify-between items-center mb-3">
+
+                                <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
+                                    {{ pyme.categoria?.nombre_categoria }}
                                 </span>
+
+                                <span class="text-yellow-500 font-semibold">
+                                    ★ {{ promedio(pyme.resenas) }}
+                                </span>
+
                             </div>
 
-                            <div
-                                class="absolute top-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                                ★ {{ pyme.rating || '5.0' }}
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                                {{ pyme.nombre_pyme }}
+                            </h3>
+
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                                {{ pyme.descripcion_pyme }}
+                            </p>
+
+                            <div class="space-y-2 text-sm text-gray-600 mb-5">
+
+                                <div>
+                                    📍 {{ pyme.direccion_pyme }}
+                                </div>
+
+                                <div>
+                                    📞 {{ pyme.telefono_pyme }}
+                                </div>
+
+                                <div>
+                                    ✉ {{ pyme.email_pyme }}
+                                </div>
+
                             </div>
+
+                            <Link :href="`/pymes/${pyme.id}`"
+                                class="block text-center bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-medium transition">
+                                Ver perfil
+                            </Link>
+
                         </div>
 
-                        <!-- CONTENIDO -->
-                        <div class="p-6">
-
-                            <div class="mb-4">
-                                <h3 class="text-2xl font-extrabold text-gray-900 mb-2">
-                                    {{ pyme.nombre_pyme }}
-                                </h3>
-
-                                <p class="text-gray-600 leading-relaxed line-clamp-3">
-                                    {{ pyme.descripcion_pyme }}
-                                </p>
-                            </div>
-
-                            <!-- INFO -->
-                            <div class="space-y-3 text-sm text-gray-600 mb-6">
-
-                                <div class="flex items-center gap-3">
-                                    <span class="text-lg">📍</span>
-                                    <span>{{ pyme.direccion_pyme }}</span>
-                                </div>
-
-                                <div class="flex items-center gap-3">
-                                    <span class="text-lg">📞</span>
-                                    <span>{{ pyme.telefono_pyme }}</span>
-                                </div>
-
-                                <div class="flex items-center gap-3">
-                                    <span class="text-lg">✉</span>
-                                    <span>{{ pyme.email_pyme }}</span>
-                                </div>
-                            </div>
-
-                            <!-- BOTONES -->
-                            <div class="flex gap-3">
-
-                                <Link :href="`/detalle-pyme/${pyme.id}`"
-                                    class="flex-1 text-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-2xl transition">
-                                    Ver perfil
-                                </Link>
-
-                                <button class="px-4 rounded-2xl border border-gray-200 hover:bg-gray-100 transition">
-                                    ❤️
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -205,7 +218,7 @@ const props = defineProps({
                         para encontrar negocios y emprendimientos.
                     </p>
 
-                    <Link href="/dashboard"
+                    <Link :href="route('index')"
                         class="inline-flex bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-2xl font-bold transition shadow-lg">
                         Volver al inicio
                     </Link>

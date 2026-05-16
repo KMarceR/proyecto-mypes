@@ -21,7 +21,7 @@ class ImagenPymeFactory extends Factory
         return [
             'pyme_id' => Pyme::inRandomOrder()->first()->id,
 
-            'ruta_imagen' => 'pymes/default.jpg',
+            'ruta_imagen' => 'https://picsum.photos/800',
         ];
     }
 }

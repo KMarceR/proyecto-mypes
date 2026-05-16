@@ -1,12 +1,11 @@
 <script setup>
-import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 defineProps({
     title: String,
@@ -40,27 +39,62 @@ const logout = () => {
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
-                                    <ApplicationMark class="block h-9 w-auto" />
-                                </Link>
-                            </div>
+                            <a class="flex items-center gap-3" :href="route('index')">
+
+                                <div class="w-11 h-11 bg-orange-500 rounded-xl flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="w-6 h-6 text-white"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor">
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M3 10l9-7 9 7v10a1 1 0 01-1 1h-6v-6H10v6H4a1 1 0 01-1-1V10z"
+                                        />
+                                    </svg>
+                                </div>
+
+                                <div>
+                                    <h1 class="text-2xl font-bold text-orange-500">
+                                        MYPEs El Salvador
+                                    </h1>
+
+                                    <p class="text-sm text-gray-500">
+                                        Directorio de negocios locales
+                                    </p>
+                                </div>
+                            </a>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
-                                    </NavLink>
-                                    <NavLink :href="route('detallepymes')" :active="route().current('detallepymes')">
-                                        Detalle Pymes
-                                    </NavLink>
-                                    <NavLink :href="route('perfilpymes')" :active="route().current('perfilpymes')">
-                                        Perfil Pymes
-                                    </NavLink>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"  v-if="$page.props.auth.user">
+                                <NavLink :href="route('index')" :active="route().current('index')">
+                                    Inicio
+                                </NavLink>
                             </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
+
+                            <!-- Sin sesión -->
+                            <template v-if="!$page.props.auth.user">
+                                <Link :href="route('login')"
+                                    class="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition font-medium text-sm">
+                                    Iniciar sesión
+                                </Link>
+                                <Link :href="route('register')"
+                                    class="ms-3 px-5 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white transition font-medium text-sm">
+                                    Registrarse
+                                </Link>
+                                <Link :href="route('registrar-mypes')"
+                                    class="ms-3 px-5 py-2 rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-50 transition font-medium text-sm">
+                                    Registrar MYPE
+                                </Link>
+                            </template>
+
+                            <template v-else>
                             <div class="ms-3 relative">
                                 <!-- Teams Dropdown -->
                                 <Dropdown v-if="$page.props.jetstream.hasTeamFeatures" align="right" width="60">
@@ -144,6 +178,14 @@ const logout = () => {
                                             Manage Account
                                         </div>
 
+                                        <DropdownLink :href="route('detallepymes')">
+                                            Detalle Pymes
+                                        </DropdownLink>
+
+                                        <DropdownLink :href="route('perfilpymes')">
+                                            Perfil Pymes
+                                        </DropdownLink>
+
                                         <DropdownLink :href="route('profile.show')">
                                             Profile
                                         </DropdownLink>
@@ -163,6 +205,7 @@ const logout = () => {
                                     </template>
                                 </Dropdown>
                             </div>
+                            </template>
                         </div>
 
                         <!-- Hamburger -->
@@ -195,17 +238,12 @@ const logout = () => {
                 </div>
 
                 <!-- Responsive Navigation Menu -->
-                <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
+                <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden" v-if=" $page?.props?.auth?.user">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
+                        <ResponsiveNavLink :href="route('index')" :active="route().current('index')">
+                            Inicio
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('detallepymes')" :active="route().current('detallepymes')">
-                            Detalle Pymes
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('perfilpymes')" :active="route().current('perfilpymes')">
-                            Perfil Pymes
-                        </ResponsiveNavLink>
+
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -226,6 +264,14 @@ const logout = () => {
                         </div>
 
                         <div class="mt-3 space-y-1">
+                            <ResponsiveNavLink :href="route('detallepymes')" :active="route().current('detallepymes')">
+                                Detalle Pymes
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink :href="route('perfilpymes')" :active="route().current('perfilpymes')">
+                                Perfil Pymes
+                            </ResponsiveNavLink>
+
                             <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
                                 Profile
                             </ResponsiveNavLink>
