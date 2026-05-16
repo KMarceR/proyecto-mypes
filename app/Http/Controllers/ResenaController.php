@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pyme;
 use App\Models\Resena;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -31,19 +32,20 @@ class ResenaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'pyme_id' => 'required|exists:pymes,id',
+    public function store(Request $request, Pyme $pyme) {
+        $request->validate([
+            'nombre_resena' => 'required|string|max:255',
             'calificacion_resenas' => 'required|integer|min:1|max:5',
-            'comentario_resenas' => 'required|string',
+            'comentario_resenas'   => 'required|string|max:1000',
         ]);
 
-        Resena::create($validated);
+        $pyme->resenas()->create([
+            'nombre_resena'       => $request->nombre_resena,
+            'calificacion_resenas' => $request->calificacion_resenas,
+            'comentario_resenas'   => $request->comentario_resenas,
+        ]);
 
-        return redirect()
-            ->route('resenas.index')
-            ->with('success', 'Reseña registrada correctamente.');
+        return redirect()->route('pymes.show', $pyme)->with('success', 'Reseña publicada.');
     }
 
     /**

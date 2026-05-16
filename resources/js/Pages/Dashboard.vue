@@ -195,7 +195,7 @@ const onErroLoadImagen = (event) => {
 
                             <div>
                                 <h4 class="font-bold text-lg text-gray-900">
-                                    Usuario
+                                    {{ resena.nombre_resena ?? 'Usuario'}}
                                 </h4>
 
                                 <p class="text-sm text-gray-400">

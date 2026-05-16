@@ -20,6 +20,7 @@ const promedio = computed(() => {
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
 const form = useForm({
+    nombre_resena: '',
     calificacion_resenas: 5,
     comentario_resenas: '',
 });
@@ -224,6 +225,19 @@ const onErroLoadImagen = (event) => {
 
                             <form @submit.prevent="submitResena" class="space-y-5">
 
+                                <!-- NOMBRE -->
+                                <div>
+                                    <label class="block font-semibold mb-2">
+                                        Tu nombre
+                                    </label>
+
+                                    <input v-model="form.nombre_resena" type="text" placeholder="Ingresa tu nombre"
+                                        class="w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 focus:ring-2 focus:ring-orange-500 focus:outline-none" />
+                                    <p v-if="form.errors.nombre_resena" class="text-red-500 text-xs mt-1">
+                                        {{ form.errors.nombre_resena }}
+                                    </p>
+                                </div>
+
                                 <!-- CALIFICACIÓN -->
                                 <div>
                                     <label class="block font-semibold mb-2">Calificación</label>
@@ -290,7 +304,7 @@ const onErroLoadImagen = (event) => {
                                 >
                                     <div class="flex items-start justify-between mb-3">
                                         <div>
-                                            <h4 class="font-bold text-xl text-gray-900">Usuario</h4>
+                                            <h4 class="font-bold text-xl text-gray-900">{{ resena.nombre_resena ?? 'Usuario'}}</h4>
                                             <p class="text-gray-400 text-sm">
                                                 {{ new Date(resena.created_at).toLocaleDateString('es-SV', { year: 'numeric', month: 'long', day: 'numeric' }) }}
                                             </p>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PymeController;
+use App\Http\Controllers\ResenaController;
 use App\Models\Categoria;
 use App\Models\Resena;
 use Illuminate\Support\Facades\Route;
@@ -67,24 +68,13 @@ Route::middleware([
         ]);
     })->name('perfilpymes');
 
-    Route::post('/pymes/{pyme}/resenas', function (Request $request, Pyme $pyme) {
-        $request->validate([
-            'calificacion_resenas' => 'required|integer|min:1|max:5',
-            'comentario_resenas'   => 'required|string|max:1000',
-        ]);
-
-        $pyme->resenas()->create([
-            'calificacion_resenas' => $request->calificacion_resenas,
-            'comentario_resenas'   => $request->comentario_resenas,
-        ]);
-
-        return redirect()->route('pymes.show', $pyme)->with('success', 'Reseña publicada.');
-    })->name('pymes.resenas.store');
 
     Route::resource('pymes', PymeController::class)->except(['show']);
 
 
 });
+
+Route::post('/pymes/{pyme}/resenas', [ResenaController::class, 'store'])->name('pymes.resenas.store');
 
 Route::get('/pymes/{pyme}', [PymeController::class, 'show'])->name('pymes.show');
 

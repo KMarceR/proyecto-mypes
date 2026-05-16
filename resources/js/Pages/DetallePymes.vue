@@ -37,7 +37,7 @@ const submit = () => {
                 <!-- Sin MYPE registrada -->
                 <div v-if="!pyme" class="bg-white shadow-xl sm:rounded-2xl p-10 text-center">
                     <p class="text-gray-500 mb-4">Aún no tienes una MYPE registrada.</p>
-                    <Link :href="route('detallepymes')"
+                    <Link :href="route('registrar-mypes')"
                         class="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition">
                         Registrar mi MYPE
                     </Link>
