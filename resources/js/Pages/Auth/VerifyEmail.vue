@@ -1,9 +1,8 @@
 <script setup>
-import { computed } from 'vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const props = defineProps({
     status: String,
@@ -19,44 +18,48 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
 </script>
 
 <template>
-    <Head title="Email Verification" />
+    <Head title="Verificar correo electrónico" />
 
-    <AuthenticationCard>
-        <template #logo>
-            <AuthenticationCardLogo />
-        </template>
-
-        <div class="mb-4 text-sm text-gray-600">
-            Before continuing, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.
-        </div>
-
-        <div v-if="verificationLinkSent" class="mb-4 font-medium text-sm text-green-600">
-            A new verification link has been sent to the email address you provided in your profile settings.
-        </div>
-
-        <form @submit.prevent="submit">
-            <div class="mt-4 flex items-center justify-between">
-                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Resend Verification Email
-                </PrimaryButton>
-
-                <div>
-                    <Link
-                        :href="route('profile.show')"
-                        class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Edit Profile</Link>
-
-                    <Link
-                        :href="route('logout')"
-                        method="post"
-                        as="button"
-                        class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ms-2"
-                    >
-                        Log Out
-                    </Link>
-                </div>
+    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 via-white to-orange-50 px-4">
+        <AuthenticationCard class="max-w-[500px] w-full">
+            <div class="mb-4 text-sm text-gray-600">
+                Antes de continuar, verifica tu correo electrónico haciendo clic en el enlace que acabamos de enviarte.
+                Si no lo recibiste, podemos enviarte otro.
             </div>
-        </form>
-    </AuthenticationCard>
+
+            <div v-if="verificationLinkSent" class="mb-4 font-medium text-sm text-green-600">
+                Se ha enviado un nuevo enlace de verificación al correo que registraste.
+            </div>
+
+            <form @submit.prevent="submit" class="block space-y-5">
+                <div class="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <PrimaryButton
+                        class="w-full sm:w-auto justify-center py-3 text-sm rounded-xl"
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"
+                    >
+                        Reenviar correo de verificación
+                    </PrimaryButton>
+
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                        <Link
+                            :href="route('profile.show')"
+                            class="text-sm text-gray-600 hover:text-gray-900 underline rounded-md"
+                        >
+                            Editar perfil
+                        </Link>
+
+                        <Link
+                            :href="route('logout')"
+                            method="post"
+                            as="button"
+                            class="text-sm text-gray-600 hover:text-gray-900 underline rounded-md"
+                        >
+                            Cerrar sesión
+                        </Link>
+                    </div>
+                </div>
+            </form>
+        </AuthenticationCard>
+    </div>
 </template>

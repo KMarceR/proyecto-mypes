@@ -19,16 +19,26 @@ Route::get('/', function () {
     ]);
 })->name('index');
 
-Route::get('/registrar-mypes', function () {
-    return Inertia::render('RegistrarMypes');
-})->name('registrar-mypes');
-
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+
+    Route::get('/registrar-mypes', function () {
+        $pyme = Pyme::where('user_id', auth()->user()->id)->first();
+
+        if($pyme) {
+            return redirect()->route('detallepymes')->with('error', 'Ya tienes una pyme registrada. No puedes registrar otra.');
+        }
+
+
+        return Inertia::render('RegistrarMypes', [
+            'categorias' => Categoria::all(),
+        ]);
+    })->name('registrar-mypes');
+
+
     Route::get('/detallepymes', function () {
         $pyme = Pyme::where('user_id', auth()->user()->id)
             ->with(['categoria', 'imagenes'])
@@ -38,13 +48,7 @@ Route::middleware([
             'pyme'       => $pyme,
         ]);
     })->name('detallepymes');
-});
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
 
     Route::get('/perfilpymes', function () {
         $pyme = Pyme::with([
@@ -53,21 +57,16 @@ Route::middleware([
             'resenas',
             'imagenes',
         ])->where('user_id', auth()->user()->id)->first();
+
+        if(!$pyme) {
+            return redirect()->route('detallepymes')->with('error', 'No tienes una pyme registrada. Por favor, regístrala primero.');
+        }
+
         return Inertia::render('Pymes/Show', [
             'pyme' => $pyme
         ]);
     })->name('perfilpymes');
 
-    Route::resource('pymes', PymeController::class)->except(['show']);
-});
-
-Route::get('/pymes/{pyme}', [PymeController::class, 'show'])->name('pymes.show');
-
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
     Route::post('/pymes/{pyme}/resenas', function (Request $request, Pyme $pyme) {
         $request->validate([
             'calificacion_resenas' => 'required|integer|min:1|max:5',
@@ -81,7 +80,14 @@ Route::middleware([
 
         return redirect()->route('pymes.show', $pyme)->with('success', 'Reseña publicada.');
     })->name('pymes.resenas.store');
+
+    Route::resource('pymes', PymeController::class)->except(['show']);
+
+
 });
+
+Route::get('/pymes/{pyme}', [PymeController::class, 'show'])->name('pymes.show');
+
 
 Route::get('/resultados-busqueda', function (Request $request) {
 
@@ -119,4 +125,3 @@ Route::get('/resultados-busqueda', function (Request $request) {
         'selectedOrderBy' => $orderBy,
     ]);
 })->name('resultados.busqueda');
-

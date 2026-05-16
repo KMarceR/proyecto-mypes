@@ -1,13 +1,12 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from "@inertiajs/vue3";
 
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import Checkbox from '@/Components/Checkbox.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import AuthenticationCard from "@/Components/AuthenticationCard.vue";
+import Checkbox from "@/Components/Checkbox.vue";
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import TextInput from "@/Components/TextInput.vue";
 
 defineProps({
     canResetPassword: Boolean,
@@ -15,17 +14,17 @@ defineProps({
 });
 
 const form = useForm({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
     remember: false,
 });
 
 const submit = () => {
     form.transform((data) => ({
         ...data,
-        remember: form.remember ? 'on' : '',
-    })).post(route('login'), {
-        onFinish: () => form.reset('password'),
+        remember: form.remember ? "on" : "",
+    })).post(route("login"), {
+        onFinish: () => form.reset("password"),
     });
 };
 </script>
@@ -36,30 +35,26 @@ const submit = () => {
     <div
         class="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 via-white to-orange-50 px-4"
     >
-
         <AuthenticationCard>
-
             <!-- LOGO -->
             <template #logo>
-
                 <template>
-    <div
-        class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-orange-100 via-white to-orange-50 px-4"
-    >
-        <!-- Logo -->
-        <div class="mb-6">
-            <slot name="logo" />
-        </div>
+                    <div
+                        class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-orange-100 via-white to-orange-50 px-4"
+                    >
+                        <!-- Logo -->
+                        <div class="mb-6">
+                            <slot name="logo" />
+                        </div>
 
-        <!-- Card -->
-        <div
-            class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-orange-100 px-8 py-10"
-        >
-            <slot />
-        </div>
-    </div>
-</template>
-
+                        <!-- Card -->
+                        <div
+                            class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-orange-100 px-8 py-10"
+                        >
+                            <slot />
+                        </div>
+                    </div>
+                </template>
             </template>
 
             <!-- STATUS -->
@@ -72,10 +67,8 @@ const submit = () => {
 
             <!-- FORM -->
             <form @submit.prevent="submit" class="space-y-5">
-
                 <!-- EMAIL -->
                 <div>
-
                     <InputLabel
                         for="email"
                         value="Correo Electrónico"
@@ -93,16 +86,11 @@ const submit = () => {
                         autocomplete="username"
                     />
 
-                    <InputError
-                        class="mt-2"
-                        :message="form.errors.email"
-                    />
-
+                    <InputError class="mt-2" :message="form.errors.email" />
                 </div>
 
                 <!-- PASSWORD -->
                 <div>
-
                     <InputLabel
                         for="password"
                         value="Contraseña"
@@ -119,18 +107,12 @@ const submit = () => {
                         autocomplete="current-password"
                     />
 
-                    <InputError
-                        class="mt-2"
-                        :message="form.errors.password"
-                    />
-
+                    <InputError class="mt-2" :message="form.errors.password" />
                 </div>
 
                 <!-- REMEMBER -->
                 <div class="flex items-center justify-between">
-
                     <label class="flex items-center">
-
                         <Checkbox
                             v-model:checked="form.remember"
                             name="remember"
@@ -140,7 +122,6 @@ const submit = () => {
                         <span class="ms-2 text-sm text-gray-600">
                             Recordarme
                         </span>
-
                     </label>
 
                     <Link
@@ -150,12 +131,10 @@ const submit = () => {
                     >
                         ¿Olvidaste tu contraseña?
                     </Link>
-
                 </div>
 
                 <!-- BUTTON -->
                 <div class="pt-2">
-
                     <PrimaryButton
                         class="w-full justify-center py-3 text-sm rounded-xl"
                         :class="{ 'opacity-25': form.processing }"
@@ -163,12 +142,10 @@ const submit = () => {
                     >
                         Iniciar Sesión
                     </PrimaryButton>
-
                 </div>
 
                 <!-- REGISTER -->
                 <div class="text-center pt-4">
-
                     <p class="text-sm text-gray-500">
                         ¿No tienes una cuenta?
 
@@ -179,12 +156,8 @@ const submit = () => {
                             Crear cuenta
                         </Link>
                     </p>
-
                 </div>
-
             </form>
-
         </AuthenticationCard>
-
     </div>
 </template>
