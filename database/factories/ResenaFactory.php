@@ -21,6 +21,8 @@ class ResenaFactory extends Factory
         return [
             'pyme_id' => Pyme::inRandomOrder()->first()->id,
 
+            'nombre_resena' => fake()->name(),
+
             'calificacion_resenas' => fake()->numberBetween(1, 5),
 
             'comentario_resenas' => fake()->paragraph(2),

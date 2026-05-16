@@ -12,12 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('resenas', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('pyme_id');
-            $table->integer('calificacion_resenas');
-            $table->text('comentario_resenas');
-            $table->timestamps();
-        });
+        $table->id();
+
+        // Relación con la pyme
+        $table->foreignId('pyme_id')
+            ->constrained('pymes')
+            ->onDelete('cascade');
+
+        // Nombre de quien comenta
+        $table->string('nombre_resena');
+
+        // Calificación 1-5
+        $table->tinyInteger('calificacion_resenas');
+
+        // Comentario
+        $table->text('comentario_resenas');
+
+        $table->timestamps();
+    });
     }
 
     /**

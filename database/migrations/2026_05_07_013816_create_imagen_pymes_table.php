@@ -12,9 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('imagen_pymes', function (Blueprint $table) {
+
             $table->id();
-            $table->unsignedBigInteger('pyme_id');
+
+            // Relación con pymes
+            $table->foreignId('pyme_id')
+                ->constrained('pymes')
+                ->onDelete('cascade');
+
+            // Ruta o nombre de la imagen
             $table->string('ruta_imagen');
+
             $table->timestamps();
         });
     }

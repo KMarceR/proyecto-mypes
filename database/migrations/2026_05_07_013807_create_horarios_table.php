@@ -12,11 +12,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('horarios', function (Blueprint $table) {
+
             $table->id();
-            $table->unsignedBigInteger('pyme_id');
+
+            // Relación con pymes
+            $table->foreignId('pyme_id')
+                ->constrained('pymes')
+                ->onDelete('cascade');
+
+            // Día de la semana
             $table->string('dia_semana_horarios');
+
+            // Horario de apertura
             $table->time('hora_apertura_horarios');
+
+            // Horario de cierre
             $table->time('hora_cierre_horarios');
+
             $table->timestamps();
         });
     }

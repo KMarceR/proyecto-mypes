@@ -14,6 +14,7 @@ class Resena extends Model
 
     protected $fillable = [
         'pyme_id',
+        'nombre_resena',
         'calificacion_resenas',
         'comentario_resenas',
     ];

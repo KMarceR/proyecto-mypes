@@ -29,13 +29,23 @@ class HorarioFactory extends Factory
         ];
 
         return [
-            'pyme_id' => Pyme::inRandomOrder()->first()->id,
+            // Relación con pymes
+            'pyme_id' => Pyme::factory(),
 
             'dia_semana_horarios' => fake()->randomElement($dias),
 
-            'hora_apertura_horarios' => '08:00:00',
+            'hora_apertura_horarios' => fake()->randomElement([
+                '07:00:00',
+                '08:00:00',
+                '09:00:00'
+            ]),
 
-            'hora_cierre_horarios' => '18:00:00',
+            'hora_cierre_horarios' => fake()->randomElement([
+                '17:00:00',
+                '18:00:00',
+                '20:00:00',
+                '22:00:00'
+            ]),
         ];
     }
 }
